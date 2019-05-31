@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Testings</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="dark.css" id="theme_css">
+
+</head>
+<body>
+	
+	<div class="main dark">
+		<div class="container">
+			<h6 class="pt-3 text-center">Feed</h6>
+			<button onclick="changeTheme()" style="outline:0" class="btn btn-dark mb-3">Theme</button>
+			<div class="row">
+				<div class="col-sm-6">
+					<p style="color: rgb(218, 95, 95)">Marvel Studios</p>
+					<ul id="marvel" class="list-group listings"></ul>
+				</div>
+				<div class="col-sm-6">
+					<p style="color: rgb(89, 207, 89)">Game of Thrones</p>
+					<ul id="thrones" class="list-group listings"></ul>
+				</div>
+			</div>
+		</div>	
+	</div>
+
+</body>
+</html>
+
+<script>
+
+	function getMarvel() {
+		let subreddit = 'marvelstudios'
+		let standard_reddit_url = 'https://www.reddit.com/r/' 
+		let url = standard_reddit_url + subreddit + '/hot.json'
+		fetch(url)
+			.then(function(response) {
+			return response.json();
+			})
+			.then(function(myJson) {
+
+			output = ''
+			let data = myJson,
+			children = data.data.children
+
+			children.forEach(element => {
+				console.log(element)
+			let title = element.data.title,
+			ups = element.data.ups,
+			downs = element.data.downs,
+			vote_total = ups - downs,
+			num_comments = element.data.num_comments,
+			postID = element.data.id,
+			getComments = standard_reddit_url + subreddit + '/comments/' + postID // + '.json'									
+
+			output += 
+				`
+				<a target="_blank" href="${getComments}">
+					<li class="list-group-item dark dark-border mb-3">
+						<div>
+							<span class="badge dark-grey badge-pill">
+								Votes - ${vote_total}
+							</span>
+
+							<h4 class="title">${title}</h4>
+							
+							<span class="badge dark-grey badge-pill">
+								Comments ${num_comments}
+							</span>
+						</div>					
+					</li>	
+				<a>			
+				`
+				
+			});
+			let beautify = document.getElementById('marvel').innerHTML = output;
+
+		});
+		
+	}
+
+	function getThrones() {
+		let subreddit = 'gameofthrones'
+		let standard_reddit_url = 'https://www.reddit.com/r/' 
+		let url = standard_reddit_url + subreddit + '/hot.json'
+		fetch(url)			
+			.then(function(response) {
+			return response.json();
+			})
+			.then(function(myJson) {
+
+			output = ''
+			let data = myJson,
+			children = data.data.children
+
+			children.forEach(element => {				
+
+			let title = element.data.title,
+			ups = element.data.ups,
+			downs = element.data.downs,
+			date_posted = element.data.created;
+			vote_total = ups - downs,
+			num_comments = element.data.num_comments,
+			postID = element.data.id,
+			getComments = standard_reddit_url + subreddit + '/comments/' + postID + '.json'									
+
+			
+			//console.log(date_posted)
+			output += 
+				`
+				<a target="_blank" href="${getComments}">
+
+					<li class="list-group-item dark dark-border mb-3">
+						<div>
+							<span class="badge dark-grey badge-pill">
+								Votes - ${vote_total}
+							</span>
+
+							<h4 class="title">${title}</h4>
+							
+							<span class="badge dark-grey badge-pill">
+								Comments ${num_comments}
+							</span>
+						</div>					
+					</li>				
+				</a>
+				`
+				
+			});
+			let beautify = document.getElementById('thrones').innerHTML = output;
+
+		});
+	}
+
+	getMarvel();
+	getThrones();
+
+	function changeTheme() {	 		
+		let sheet = document.getElementById('theme_css')
+		sheet.x = 'light' == sheet.x ? 'dark' : 'light';
+		sheet.href = sheet.x + '.css';
+		
+	};
+</script>
